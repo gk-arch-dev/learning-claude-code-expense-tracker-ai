@@ -1,0 +1,78 @@
+import { type ClassValue, clsx } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+import { format, parseISO } from 'date-fns';
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
+
+// Currency conversion utilities
+export const dollarsToCents = (dollars: string): number => {
+  const amount = parseFloat(dollars);
+  if (isNaN(amount)) return 0;
+  return Math.round(amount * 100);
+};
+
+export const centsToDollars = (cents: number): string => {
+  return (cents / 100).toFixed(2);
+};
+
+export const formatCurrency = (cents: number): string => {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+  }).format(cents / 100);
+};
+
+// Date formatting utilities
+export const formatDate = (dateString: string): string => {
+  try {
+    return format(parseISO(dateString), 'MMM d, yyyy');
+  } catch {
+    return dateString;
+  }
+};
+
+export const formatDateLong = (dateString: string): string => {
+  try {
+    return format(parseISO(dateString), 'MMMM d, yyyy');
+  } catch {
+    return dateString;
+  }
+};
+
+// ID generation
+export const generateId = (): string => {
+  return `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+};
+
+// Export utilities
+export const exportToCSV = (data: any[], filename: string): void => {
+  if (data.length === 0) return;
+
+  const headers = Object.keys(data[0]);
+  const csvContent = [
+    headers.join(','),
+    ...data.map((row) =>
+      headers.map((header) => {
+        const value = row[header];
+        // Escape values containing commas or quotes
+        if (typeof value === 'string' && (value.includes(',') || value.includes('"'))) {
+          return `"${value.replace(/"/g, '""')}"`;
+        }
+        return value;
+      }).join(',')
+    ),
+  ].join('\n');
+
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement('a');
+  const url = URL.createObjectURL(blob);
+
+  link.setAttribute('href', url);
+  link.setAttribute('download', filename);
+  link.style.visibility = 'hidden';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};

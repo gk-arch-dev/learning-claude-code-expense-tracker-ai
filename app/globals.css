@@ -1,0 +1,133 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+
+  /* Category Colors */
+  --color-category-food: #10b981;
+  --color-category-transportation: #3b82f6;
+  --color-category-entertainment: #ec4899;
+  --color-category-shopping: #f59e0b;
+  --color-category-bills: #ef4444;
+  --color-category-other: #6b7280;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* React Day Picker Styles */
+.rdp {
+  --rdp-cell-size: 40px;
+  --rdp-accent-color: #3b82f6;
+  --rdp-background-color: #e0e7ff;
+  margin: 0;
+}
+
+.rdp-months {
+  display: flex;
+  gap: 1rem;
+}
+
+.rdp-month {
+  width: 100%;
+}
+
+.rdp-caption {
+  display: flex;
+  justify-content: center;
+  padding: 0.5rem;
+  font-weight: 600;
+}
+
+.rdp-nav {
+  position: absolute;
+  top: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0 0.5rem;
+}
+
+.rdp-nav_button {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.rdp-nav_button:hover {
+  background-color: #f3f4f6;
+}
+
+.rdp-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.rdp-head_cell {
+  font-weight: 500;
+  font-size: 0.875rem;
+  color: #6b7280;
+  padding: 0.5rem 0;
+}
+
+.rdp-cell {
+  text-align: center;
+  padding: 0;
+}
+
+.rdp-day {
+  width: var(--rdp-cell-size);
+  height: var(--rdp-cell-size);
+  border-radius: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 0.875rem;
+}
+
+.rdp-day:hover:not(.rdp-day_disabled):not(.rdp-day_selected) {
+  background-color: #f3f4f6;
+}
+
+.rdp-day_selected {
+  background-color: var(--rdp-accent-color);
+  color: white;
+  font-weight: 500;
+}
+
+.rdp-day_today:not(.rdp-day_selected) {
+  font-weight: 600;
+  color: var(--rdp-accent-color);
+}
+
+.rdp-day_disabled {
+  color: #d1d5db;
+  cursor: not-allowed;
+}
+
+.rdp-day_outside {
+  color: #d1d5db;
+}
