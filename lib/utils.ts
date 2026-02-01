@@ -1,6 +1,8 @@
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { format, parseISO } from 'date-fns';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -66,6 +68,65 @@ export const exportToCSV = (data: any[], filename: string): void => {
   ].join('\n');
 
   const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  downloadFile(blob, filename);
+};
+
+export const exportToJSON = (data: any[], filename: string): void => {
+  if (data.length === 0) return;
+
+  const jsonContent = JSON.stringify(data, null, 2);
+  const blob = new Blob([jsonContent], { type: 'application/json;charset=utf-8;' });
+  downloadFile(blob, filename);
+};
+
+export const exportToPDF = (data: any[], filename: string, title: string = 'Expense Report'): void => {
+  if (data.length === 0) return;
+
+  const doc = new jsPDF();
+
+  // Add title
+  doc.setFontSize(16);
+  doc.text(title, 14, 15);
+
+  // Add metadata
+  doc.setFontSize(10);
+  doc.setTextColor(100, 100, 100);
+  doc.text(`Generated: ${new Date().toLocaleString()}`, 14, 25);
+  doc.text(`Total Records: ${data.length}`, 14, 32);
+
+  // Reset text color for table
+  doc.setTextColor(0, 0, 0);
+
+  // Add table
+  const headers = Object.keys(data[0]);
+  const rows = data.map((item) =>
+    headers.map((header) => String(item[header]))
+  );
+
+  autoTable(doc, {
+    head: [headers],
+    body: rows,
+    startY: 40,
+    theme: 'grid',
+    styles: {
+      fontSize: 9,
+      cellPadding: 3,
+    },
+    headStyles: {
+      fillColor: [59, 130, 246],
+      textColor: 255,
+      fontStyle: 'bold',
+    },
+    alternateRowStyles: {
+      fillColor: [245, 245, 245],
+    },
+  });
+
+  doc.save(filename);
+};
+
+// Helper function for file downloads
+const downloadFile = (blob: Blob, filename: string): void => {
   const link = document.createElement('a');
   const url = URL.createObjectURL(blob);
 
@@ -75,4 +136,5 @@ export const exportToCSV = (data: any[], filename: string): void => {
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
+  URL.revokeObjectURL(url);
 };
