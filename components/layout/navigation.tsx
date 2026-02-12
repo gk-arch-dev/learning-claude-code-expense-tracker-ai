@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
-import { LayoutDashboard, Receipt } from 'lucide-react';
+import { LayoutDashboard, Receipt, PieChart } from 'lucide-react';
 
 export function Navigation() {
   const pathname = usePathname();
@@ -18,6 +18,11 @@ export function Navigation() {
       href: '/expenses',
       label: 'Expenses',
       icon: Receipt,
+    },
+    {
+      href: '/insights',
+      label: 'Insights',
+      icon: PieChart,
     },
   ];
 
